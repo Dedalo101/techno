@@ -279,7 +279,7 @@
                 </div>
                 
                 <div id="serverStatus" class="server-status offline">
-                    ⚠ Mock mode active - Add real Udio API key for live generation
+                    ⚠ Real Udio server - Add your API token for live TECHNO generation
                 </div>
                 
                 <button onclick="generateTrack()" id="generateBtn">
@@ -340,7 +340,7 @@
 
     <script>
         let selectedStyle = 'minimal';
-        const SERVER_URL = 'http://localhost:5000';
+        const SERVER_URL = 'http://localhost:5001';  // Real Udio server
         
         // TECHNO style descriptions
         const TECHNO_STYLES = {
@@ -384,15 +384,15 @@
                 
                 const statusEl = document.getElementById('serverStatus');
                 statusEl.className = 'server-status online';
-                statusEl.innerHTML = '✅ Mock server online - Ready for demo generation';
+                statusEl.innerHTML = '✅ Real Udio server online - Ready for TECHNO generation';
                 
                 showStatus('Server is running!', 'success');
             } catch (error) {
                 const statusEl = document.getElementById('serverStatus');
                 statusEl.className = 'server-status offline';
-                statusEl.innerHTML = '❌ Server offline - Run: python udio_server.py';
+                statusEl.innerHTML = '❌ Server offline - Run: python real_udio_server.py';
                 
-                showStatus('Server not running. Start with: python udio_server.py', 'error');
+                showStatus('Server not running. Start with: python real_udio_server.py', 'error');
             }
         }
         
