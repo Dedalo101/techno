@@ -11,5 +11,60 @@
     "next": "^14.2.32",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "api": {
+    "/api/generate-track": {
+      "post": {
+        "handler": "pages/api/generate-track.js",
+        "body": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string",
+              "description": "The prompt for generating the track"
+            }
+          },
+          "required": ["prompt"]
+        },
+        "response": {
+          "200": {
+            "description": "Track generated successfully",
+            "body": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "audioUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "The URL of the generated audio file"
+                },
+                "trackId": {
+                  "type": "string",
+                  "description": "The ID of the generated track"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "500": {
+            "description": "Failed to generate music"
+          }
+        }
+      }
+    }
+  },
+  "pages": {
+    "/": {
+      "component": "pages/index.js",
+      "props": {},
+      "revalidate": 10
+    }
   }
 }
