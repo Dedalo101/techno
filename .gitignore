@@ -1,0 +1,15 @@
+# Exclude large files
+node_modules/
+dist/
+build/
+out/
+*.exe
+*.dmg
+*.AppImage
+**electron**
+*.zip
+*.tar.gz
+temp/
+.DS_Store
+*.log
+public/TECHNO-Generator*
