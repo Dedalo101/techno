@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI TECHNO Generator - Updated</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            border: 2px solid #00ff00;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            max-width: 600px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffff00;
+            color: #ffff00;
+        }
+        
+        .option {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #004400;
+            border-radius: 4px;
+            background: rgba(0, 255, 0, 0.05);
+        }
+        
+        .option h3 {
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background: #004400;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        
+        button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+        }
+        
+        code {
+            background: #002200;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI TECHNO Generator</h1>
+        
+        <div class="status">
+            ⚡ New Local Version Available!
+        </div>
+        
+        <div class="option">
+            <h3>🏠 Local Development Server</h3>
+            <p>✅ 6 TECHNO styles working</p>
+            <p>✅ Mock server running</p>
+            <p>✅ No API limits</p>
+            <button onclick="tryLocal()">🚀 Try Local Version</button>
+        </div>
+        
+        <div class="option">
+            <h3>📋 Quick Setup</h3>
+            <p>1. Run: <code>python simple_server.py</code></p>
+            <p>2. Run: <code>python -m http.server 8000</code></p>
+            <p>3. Visit: <code>localhost:8000/index_udio.html</code></p>
+        </div>
+        
+        <div class="option">
+            <h3>🌐 GitHub Pages (Limited)</h3>
+            <p>⚠ May have API issues</p>
+            <button onclick="showOriginal()">📱 Continue Anyway</button>
+        </div>
+    </div>
+
+    <script>
+        function tryLocal() {
+            window.open('http://localhost:8000/index_udio.html', '_blank');
+        }
+        
+        function showOriginal() {
+            window.location.href = 'index_original.html';
+        }
+    </script>
+</body>
+</html>

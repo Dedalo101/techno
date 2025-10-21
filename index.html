@@ -1,4 +1,65 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AI Techno - techno.agg.homes</title><style>body{background:#000;color:#0f0;font-family:'Courier New',monospace;margin:0;padding:20px}*{box-sizing:border-box}.container{max-width:600px;margin:0 auto;text-align:center}h1{font-size:2em;text-transform:uppercase;margin-bottom:30px}select,input,button{background:#111;color:#0f0;border:1px solid #0f0;padding:12px;margin:5px;font-family:inherit;width:200px}button{cursor:pointer;width:auto;padding:12px 24px;font-size:16px}.progress{height:5px;background:#333;margin:20px 0;border-radius:3px;overflow:hidden}#result{margin:20px 0;padding:20px;border:1px solid #0f0;border-radius:5px}#quota{font-size:0.9em;opacity:0.7}.loading{width:100%;background:#0f0;height:5px;animation:pulse 1s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}</style></head><body><div class="container"><h1>🤖 AI TECHNO GENERATOR</h1><div class="generator"><select id="subgenre"><option value="minimal">Minimal Techno</option><option value="acid">Acid Techno</option><option value="hard">Hard Techno</option><option value="melodic">Melodic Techno</option><option value="dub">Dub Techno</option></select><input type="text" id="prompt" placeholder="Dark warehouse, 130 BPM..." value="TECHNO"><button onclick="generateTrack()">GENERATE TRACK</button><button onclick="showSettings()" style="background:#333;width:auto;margin-left:5px">⚙️ API</button><div id="progress" class="progress"></div><div id="result"></div><p id="quota">Songs left: <span id="quota-count">10</span></p></div></div><script>
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>🤖 AI TECHNO Generator - Updated</title>
+<style>
+body{background:#000;color:#0f0;font-family:'Courier New',monospace;margin:0;padding:20px}
+*{box-sizing:border-box}
+.container{max-width:600px;margin:0 auto;text-align:center}
+h1{font-size:2em;text-transform:uppercase;margin-bottom:30px}
+.notice{background:#333;border:2px solid #ff0;color:#ff0;padding:20px;margin:20px 0;border-radius:5px}
+.option{background:#111;border:1px solid #0f0;padding:15px;margin:10px 0;border-radius:5px}
+button{background:#111;color:#0f0;border:1px solid #0f0;padding:12px 24px;margin:5px;font-family:inherit;cursor:pointer;font-size:16px}
+button:hover{background:#0f0;color:#000}
+</style></head>
+<body>
+<div class="container">
+<h1>🤖 AI TECHNO GENERATOR</h1>
+
+<div class="notice">
+⚡ <strong>NEW VERSION AVAILABLE!</strong><br>
+The old Suno API version has connection issues.<br>
+Switch to the new local server version for better performance.
+</div>
+
+<div class="option">
+<h3>🏠 LOCAL VERSION (RECOMMENDED)</h3>
+<p>✅ 6 TECHNO styles working<br>✅ Mock server included<br>✅ No API limits</p>
+<button onclick="openLocal()">🚀 OPEN LOCAL VERSION</button>
+</div>
+
+<div class="option">
+<h3>🌐 WEB VERSION (LIMITED)</h3>
+<p>⚠ May have API connection issues<br>⚠ Requires external API keys</p>
+<button onclick="continueOld()">📱 CONTINUE WITH WEB</button>
+</div>
+
+<div id="oldInterface" style="display:none">
+<h2>Web Version (Limited)</h2>
+<div class="generator">
+<select id="subgenre">
+<option value="minimal">Minimal Techno</option>
+<option value="acid">Acid Techno</option>
+<option value="hard">Hard Techno</option>
+<option value="melodic">Melodic Techno</option>
+<option value="dub">Dub Techno</option>
+</select>
+<input type="text" id="prompt" placeholder="Dark warehouse, 130 BPM..." value="TECHNO">
+<button onclick="generateTrack()">GENERATE TRACK</button>
+<button onclick="showSettings()">⚙️ API</button>
+<div id="progress" class="progress"></div>
+<div id="result"></div>
+<p id="quota">Songs left: <span id="quota-count">10</span></p>
+</div>
+</div>
+</div>
+
+<script>
+function openLocal() {
+    window.open('http://localhost:8000/index_udio.html', '_blank');
+}
+
+function continueOld() {
+    document.getElementById('oldInterface').style.display = 'block';
+}
 const SUNO_COOKIE = 'eyJhbGciOiJSUzI1NiIsImNhdCI6ImNsX0I3ZDRQRDExMUFBQSIsImtpZCI6Imluc18yT1o2eU1EZzhscWRKRWloMXJvemY4T3ptZG4iLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJzdW5vLWFwaSIsImF6cCI6Imh0dHBzOi8vc3Vuby5jb20iLCJleHAiOjE3NjEwNTc4MDAsImZ2YSI6WzAsLTFdLCJodHRwczovL3N1bm8uYWkvY2xhaW1zL2NsZXJrX2lkIjoidXNlcl8zNE5WbVZsZk5NTFR4UWQ1YWpvbDNZdnFIaE4iLCJodHRwczovL3N1bm8uYWkvY2xhaW1zL2VtYWlsIjoiYXp4Y3Z0cmV3QGdtYWlsLmNvbSIsImh0dHBzOi8vc3Vuby5haS9jbGFpbXMvcGhvbmUiOm51bGwsImlhdCI6MTc2MTA1NDIwMCwiaXNzIjoiaHR0cHM6Ly9jbGVyay5zdW5vLmNvbSIsImp0aSI6IjhhNDIyYTUzOTdkNDhlZDI5NWZlIiwibmJmIjoxNzYxMDU0MTkwLCJzaWQiOiJzZXNzXzM0TlZtWDhjZUo0SUhsdElxWFJGdHlLZWFmZCIsInN0cyI6ImFjdGl2ZSIsInN1YiI6InVzZXJfMzROVm1WbGZOTUxUeFFkNWFqb2wzWXZxSGhOIn0.NWjhr7jekVmkw74E0XInhB8dNpgrfWMFSA1Btyevmy0pN2IksvCa0nWumqsl_Gw63yakxbe2LIUKS2jczQCte7I01ItdXRX3MxhTV0G-_INSjtrXsHo1KP9s1VACFm1hZyEPbb3Ldu0j8Bi21k1s1rFTW-2GBepg4nUiRqB9PuuK48s7-IZ2_NpZjvv7_UQ9Y_OckwdgOz851Lt2Qf3CmlKimozp76i0kw1vEnvFOVb6zoPgSmF28Ql2mdylWxzMkO4AwuFkr0RbMv2-F-tSKP9VQtfWF3tyTy7-jqpDQWeCVVU6J5FIt3EU20POZR80hv0UOaQiFqeuTtPiIaXWcg';
 
 function getApiKey() {
