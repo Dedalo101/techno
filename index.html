@@ -1,65 +1,126 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
 
-<html lang="en"><html lang="en">
+<html lang="en">
 
-<head><head>
+<head><html lang="en"><html lang="en">
 
-    <meta charset="UTF-8">    <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><head><head>
 
-    <title>Techno Generator</title>    <title>AI Techno Generator</title>
+    <title>AI Techno Generator</title>
 
-    <link rel="stylesheet" href="style.css">    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">    <meta charset="UTF-8">    <meta charset="UTF-8">
+
+</head>
+
+<body>    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <div class="container">
+
+        <div class="header">    <title>Techno Generator</title>    <title>AI Techno Generator</title>
+
+            <h1>🎵 TECHNO GENERATOR</h1>
+
+            <p>AI-powered techno music creation</p>    <link rel="stylesheet" href="style.css">    <link rel="stylesheet" href="style.css">
+
+        </div>
 
 </head></head>
 
-<body><body>
+        <div class="quota-section">
 
-    <div class="container">    <div class="container">
+            <div class="quota-info"><body><body>
 
-        <div class="header">        <h1>🤖 AI TECHNO</h1>
+                <span id="quota-display">Daily quota: 10/10</span>
 
-            <h1>🎵 TECHNO GENERATOR</h1>        <div class="generator">
+                <button id="reset-quota" class="reset-btn">Reset</button>    <div class="container">    <div class="container">
 
-            <p>AI-powered techno music creation</p>            <select id="subgenre">
-
-        </div>                <option value="minimal">Minimal Techno</option>
-
-                <option value="acid">Acid Techno</option>
-
-        <div class="quota-section">                <option value="hard">Hard Techno</option>
-
-            <div class="quota-info">                <option value="melodic">Melodic Techno</option>
-
-                <span id="quota-display">Daily quota: 10/10</span>                <option value="dub">Dub Techno</option>
-
-                <button id="reset-quota" class="reset-btn">Reset</button>            </select>
-
-            </div>            <input type="text" id="prompt" placeholder="Dark warehouse, 130 BPM">
-
-        </div>            <button onclick="generateTrack()">GENERATE</button>
-
-            <div id="progress"></div>
-
-        <div class="generator-section">            <div id="result"></div>
-
-            <div class="subgenre-grid">            <p>Songs left: <span id="quota-count">10</span></p>
-
-                <button class="subgenre-btn" data-style="industrial">Industrial</button>        </div>
-
-                <button class="subgenre-btn" data-style="acid">Acid</button>    </div>
-
-                <button class="subgenre-btn" data-style="minimal">Minimal</button>    <script src="script.js"></script>
-
-                <button class="subgenre-btn" data-style="hardtechno">Hard Techno</button></body>
-
-                <button class="subgenre-btn" data-style="detroit">Detroit</button></html>
             </div>
-            
+
+        </div>        <div class="header">        <h1>🤖 AI TECHNO</h1>
+
+
+
+        <div class="generator-section">            <h1>🎵 TECHNO GENERATOR</h1>        <div class="generator">
+
+            <div class="subgenre-grid">
+
+                <button class="subgenre-btn" data-style="industrial">Industrial</button>            <p>AI-powered techno music creation</p>            <select id="subgenre">
+
+                <button class="subgenre-btn" data-style="acid">Acid</button>
+
+                <button class="subgenre-btn" data-style="minimal">Minimal</button>        </div>                <option value="minimal">Minimal Techno</option>
+
+                <button class="subgenre-btn" data-style="hardtechno">Hard Techno</button>
+
+                <button class="subgenre-btn" data-style="detroit">Detroit</button>                <option value="acid">Acid Techno</option>
+
+            </div>
+
+                    <div class="quota-section">                <option value="hard">Hard Techno</option>
+
             <button id="generate-btn" class="generate-btn">
-                <span id="btn-text">Generate THENO Track</span>
+
+                <span id="btn-text">Generate THENO Track</span>            <div class="quota-info">                <option value="melodic">Melodic Techno</option>
+
                 <div id="loading" class="loading hidden">
+
+                    <div class="spinner"></div>                <span id="quota-display">Daily quota: 10/10</span>                <option value="dub">Dub Techno</option>
+
+                    <span>Creating...</span>
+
+                </div>                <button id="reset-quota" class="reset-btn">Reset</button>            </select>
+
+            </button>
+
+        </div>            </div>            <input type="text" id="prompt" placeholder="Dark warehouse, 130 BPM">
+
+
+
+        <div id="result" class="result hidden">        </div>            <button onclick="generateTrack()">GENERATE</button>
+
+            <h3>🎧 Your Track is Ready!</h3>
+
+            <div id="track-info"></div>            <div id="progress"></div>
+
+            <audio id="audio-player" controls>
+
+                <source id="audio-source" src="" type="audio/mpeg">        <div class="generator-section">            <div id="result"></div>
+
+                Your browser does not support the audio element.
+
+            </audio>            <div class="subgenre-grid">            <p>Songs left: <span id="quota-count">10</span></p>
+
+            <div class="download-section">
+
+                <a id="download-link" href="#" download class="download-btn">Download MP3</a>                <button class="subgenre-btn" data-style="industrial">Industrial</button>        </div>
+
+            </div>
+
+        </div>                <button class="subgenre-btn" data-style="acid">Acid</button>    </div>
+
+
+
+        <div id="error" class="error hidden"></div>                <button class="subgenre-btn" data-style="minimal">Minimal</button>    <script src="script.js"></script>
+
+
+
+        <div class="footer">                <button class="subgenre-btn" data-style="hardtechno">Hard Techno</button></body>
+
+            <p>Powered by Suno AI • Made with 💜 for techno lovers</p>
+
+        </div>                <button class="subgenre-btn" data-style="detroit">Detroit</button></html>
+
+    </div>            </div>
+
+            
+
+    <script src="script.js"></script>            <button id="generate-btn" class="generate-btn">
+
+</body>                <span id="btn-text">Generate THENO Track</span>
+
+</html>                <div id="loading" class="loading hidden">
                     <div class="spinner"></div>
                     <span>Creating...</span>
                 </div>
