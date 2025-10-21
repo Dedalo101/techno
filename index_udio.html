@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI TECHNO Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.4;
+        }
+        
+        .terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 15px;
+        }
+        
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        
+        .generator {
+            margin: 30px 0;
+        }
+        
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #004400;
+            border-radius: 4px;
+            background: rgba(0, 255, 0, 0.05);
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #00ff00;
+            text-decoration: underline;
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        input[type="text"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: #001100;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        button {
+            background: #004400;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .status.loading {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffff00;
+            color: #ffff00;
+        }
+        
+        .status.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+        
+        .status.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+        
+        .audio-player {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        audio {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #ff0000;
+        }
+        
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .style-btn {
+            padding: 10px;
+            background: #001100;
+            border: 1px solid #004400;
+            color: #00ff00;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+            transition: all 0.3s;
+            margin: 0;
+        }
+        
+        .style-btn:hover, .style-btn.active {
+            background: #004400;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        
+        .server-status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .server-status.online {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+        
+        .server-status.offline {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffff00;
+            color: #ffff00;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #004400;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            <div class="title">🤖 AI TECHNO Generator</div>
+            <div class="subtitle">Powered by Udio AI • Terminal Interface</div>
+        </div>
+        
+        <div class="generator">
+            <div class="section">
+                <div class="section-title">› TECHNO Style Selection</div>
+                <div class="style-grid">
+                    <div class="style-btn active" onclick="selectStyle('minimal')" data-style="minimal">
+                        🔄 Minimal
+                    </div>
+                    <div class="style-btn" onclick="selectStyle('acid')" data-style="acid">
+                        🧪 Acid
+                    </div>
+                    <div class="style-btn" onclick="selectStyle('hard')" data-style="hard">
+                        ⚡ Hard
+                    </div>
+                    <div class="style-btn" onclick="selectStyle('melodic')" data-style="melodic">
+                        🎹 Melodic
+                    </div>
+                    <div class="style-btn" onclick="selectStyle('dub')" data-style="dub">
+                        🌊 Dub
+                    </div>
+                    <div class="style-btn" onclick="selectStyle('industrial')" data-style="industrial">
+                        🏭 Industrial
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">› TECHNO Generation</div>
+                
+                <div class="input-group">
+                    <label>Prompt:</label>
+                    <input type="text" id="promptInput" placeholder="dark warehouse vibes" value="TECHNO">
+                </div>
+                
+                <div id="serverStatus" class="server-status offline">
+                    ⚠ Local server not running - Run: python udio_server.py
+                </div>
+                
+                <button onclick="generateTrack()" id="generateBtn">
+                    ▶ GENERATE TECHNO
+                </button>
+                
+                <button onclick="showSettings()" id="settingsBtn">
+                    ⚙ API Settings
+                </button>
+                
+                <button onclick="checkServer()" id="serverBtn">
+                    🔌 Check Server
+                </button>
+            </div>
+            
+            <div id="status" class="status" style="display: none;"></div>
+            
+            <div id="result" class="audio-player" style="display: none;">
+                <audio controls id="audioPlayer">
+                    Your browser does not support the audio element.
+                </audio>
+                <div id="trackInfo"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🎵 AI-powered TECHNO generation • Open Source</p>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSettings()">&times;</span>
+            <h2>⚙ API Settings</h2>
+            
+            <div class="section">
+                <h4>🔑 Udio API Setup:</h4>
+                <p>1. Go to <a href="https://udio.com" target="_blank" style="color: #0099ff;">udio.com</a></p>
+                <p>2. Open Developer Tools (F12)</p>
+                <p>3. Go to Application → Cookies</p>
+                <p>4. Copy the <code>sb-api-auth-token</code> value</p>
+            </div>
+            
+            <div class="input-group">
+                <label>API Key (Udio Auth Token):</label>
+                <input type="password" id="apiKeyInput" placeholder="Enter your Udio auth token">
+            </div>
+            
+            <button onclick="saveSettings()">💾 Save API Key</button>
+            <button onclick="testConnection()">🔌 Test Connection</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedStyle = 'minimal';
+        const SERVER_URL = 'http://localhost:5000';
+        
+        // TECHNO style descriptions
+        const TECHNO_STYLES = {
+            'minimal': 'Minimal techno with hypnotic loops and stripped-down beats',
+            'acid': 'Acid techno with TB-303 basslines and squelchy sounds',
+            'hard': 'Hard techno with aggressive kicks and fast BPM',
+            'melodic': 'Melodic techno with emotional progressions and uplifting synths',
+            'dub': 'Dub techno with deep reverb and spacious mix',
+            'industrial': 'Industrial techno with mechanical sounds and heavy distortion'
+        };
+        
+        function selectStyle(style) {
+            selectedStyle = style;
+            
+            // Update UI
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-style="${style}"]`).classList.add('active');
+            
+            showStatus(`Selected: ${TECHNO_STYLES[style]}`, 'success');
+        }
+        
+        function showStatus(message, type = 'loading') {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            status.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        async function checkServer() {
+            try {
+                const response = await fetch(`${SERVER_URL}/health`);
+                const data = await response.json();
+                
+                const statusEl = document.getElementById('serverStatus');
+                statusEl.className = 'server-status online';
+                statusEl.innerHTML = '✅ Server online - Ready to generate TECHNO';
+                
+                showStatus('Server is running!', 'success');
+            } catch (error) {
+                const statusEl = document.getElementById('serverStatus');
+                statusEl.className = 'server-status offline';
+                statusEl.innerHTML = '❌ Server offline - Run: python udio_server.py';
+                
+                showStatus('Server not running. Start with: python udio_server.py', 'error');
+            }
+        }
+        
+        async function generateTrack() {
+            const prompt = document.getElementById('promptInput').value || 'TECHNO';
+            const apiKey = getApiKey();
+            
+            if (!apiKey) {
+                showStatus('Please set up your Udio API key first', 'error');
+                showSettings();
+                return;
+            }
+            
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.disabled = true;
+            generateBtn.textContent = '🔄 GENERATING...';
+            
+            showStatus(`Generating ${selectedStyle} TECHNO track...`, 'loading');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        style: selectedStyle,
+                        prompt: prompt,
+                        auth_token: apiKey
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showResult(data.track);
+                    showStatus('TECHNO track generated successfully!', 'success');
+                } else {
+                    throw new Error(data.error || 'Generation failed');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Error: ${error.message}`, 'error');
+                
+                if (error.message.includes('Failed to fetch')) {
+                    showStatus('Server not running. Start with: python udio_server.py', 'error');
+                }
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '▶ GENERATE TECHNO';
+            }
+        }
+        
+        function showResult(track) {
+            const result = document.getElementById('result');
+            const audio = document.getElementById('audioPlayer');
+            const trackInfo = document.getElementById('trackInfo');
+            
+            if (track.audio_url) {
+                audio.src = track.audio_url;
+                trackInfo.innerHTML = `
+                    <h3>🎵 ${track.title}</h3>
+                    <p><strong>Style:</strong> ${track.style.charAt(0).toUpperCase() + track.style.slice(1)} TECHNO</p>
+                    <p><strong>Prompt:</strong> ${track.prompt}</p>
+                    <a href="${track.audio_url}" download="techno-${track.style}-${Date.now()}.mp3" 
+                       style="color: #00ff00; margin-top: 10px; display: inline-block;">
+                        💾 Download Track
+                    </a>
+                `;
+                result.style.display = 'block';
+            }
+        }
+        
+        function getApiKey() {
+            return localStorage.getItem('udio-api-key') || '';
+        }
+        
+        function showSettings() {
+            const modal = document.getElementById('settingsModal');
+            const input = document.getElementById('apiKeyInput');
+            input.value = getApiKey();
+            modal.style.display = 'block';
+        }
+        
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+        
+        function saveSettings() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            if (apiKey) {
+                localStorage.setItem('udio-api-key', apiKey);
+                showStatus('API key saved successfully!', 'success');
+                closeSettings();
+            } else {
+                showStatus('Please enter a valid API key', 'error');
+            }
+        }
+        
+        async function testConnection() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            if (!apiKey) {
+                showStatus('Please enter an API key first', 'error');
+                return;
+            }
+            
+            showStatus('Testing connection...', 'loading');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/health`);
+                if (response.ok) {
+                    showStatus('Connection successful!', 'success');
+                } else {
+                    throw new Error('Server not responding');
+                }
+            } catch (error) {
+                showStatus('Connection failed. Make sure server is running.', 'error');
+            }
+        }
+        
+        // Check server status on load
+        window.addEventListener('load', () => {
+            checkServer();
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('settingsModal');
+            if (event.target === modal) {
+                closeSettings();
+            }
+        });
+    </script>
+</body>
+</html>
