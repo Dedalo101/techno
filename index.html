@@ -3,16 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎵 TECHNO Generator</title>
-    <meta http-equiv="refresh" content="1; url=/public/techno-mobile/">
-    <style>
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-          background: linear-gradient(135deg, #000 0%, #1a0033 50%, #330066 100%);
-          color: #fff; min-height: 100vh; display: flex;
-          align-items: center; justify-content: center; text-align: center;
-          margin: 0; padding: 20px;
-        }
+    <title>AI Techno Generator - techno.agg.homes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI TECHNO GENERATOR</h1>
+        <div class="generator">
+            <select id="subgenre">
+                <option value="">Select Techno Style</option>
+                <option value="minimal">Minimal Techno</option>
+                <option value="acid">Acid Techno</option>
+                <option value="hard">Hard Techno</option>
+                <option value="melodic">Melodic Techno</option>
+                <option value="dub">Dub Techno</option>
+                <option value="detroit">Detroit Techno</option>
+                <option value="industrial">Industrial Techno</option>
+                <option value="ambient">Ambient Techno</option>
+                <option value="deep">Deep Techno</option>
+                <option value="hardgroove">Hardgroove Techno</option>
+                <option value="hypnotic">Hypnotic Techno</option>
+                <option value="rave">Rave Techno</option>
+            </select>
+            <input type="text" id="prompt" placeholder="Dark warehouse, 130 BPM, driving bassline..." maxlength="200">
+            <button id="generateBtn" onclick="generateTrack()">GENERATE TRACK</button>
+            <div id="progress" class="progress hidden"></div>
+            <div id="result" class="result"></div>
+            <p id="quota">Songs left today: <span id="quota-count">10</span></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
 
         *{box-sizing:border-box}
         html,body{height:100%;margin:0;padding:0}
