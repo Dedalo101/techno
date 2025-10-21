@@ -10,11 +10,54 @@ function throwError() {
   )
 }
 
+// Add this function to handle Udio API call
+async function generateThenoMusic() {
+  try {
+    const response = await fetch('/api/generate-music', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: 'THENO music style, energetic, 20 seconds',
+        duration: 20
+      })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to generate music')
+    }
+    
+    const data = await response.json()
+    
+    // Open the generated audio in a new tab or play it
+    if (data.audioUrl) {
+      window.open(data.audioUrl, '_blank')
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Error generating music:', error)
+    alert('Failed to generate music. Please try again.')
+  }
+}
+
 function Home() {
   const [count, setCount] = useState(0)
+  const [isGenerating, setIsGenerating] = useState(false)
+  
   const increment = useCallback(() => {
     setCount((v) => v + 1)
   }, [setCount])
+
+  const handleGenerateMusic = async () => {
+    setIsGenerating(true)
+    try {
+      await generateThenoMusic()
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   useEffect(() => {
     const r = setInterval(() => {
@@ -46,6 +89,16 @@ function Home() {
       <div>
         <p>Component with state.</p>
         <ClickCount />
+      </div>
+      <hr className={styles.hr} />
+      <div>
+        <p>Generate a 20-second THENO music track using Udio API.</p>
+        <Button
+          onClick={handleGenerateMusic}
+          disabled={isGenerating}
+        >
+          {isGenerating ? 'Generating...' : 'Generate THENO Music'}
+        </Button>
       </div>
       <hr className={styles.hr} />
       <div>
