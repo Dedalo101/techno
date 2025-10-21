@@ -171,18 +171,19 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">🎵 TECHNO GENERATOR</div>
-            <p style="opacity: 0.8;">AI-Powered Music Creation</p>
+            <div class="logo">TECHNO</div>
+            <div class="subtitle">AI-Powered Music Generation</div>
         </div>
         
-        <div class="card">
-            <div class="input-group">
-                <label>🔑 Udio API Key</label>
+        <div class="main-card">
+            <!-- Hidden API Key field -->
+            <div class="input-group api-key-group">
+                <label>API Key</label>
                 <input type="password" id="apiKey" placeholder="Enter your API key">
             </div>
             
             <div class="input-group">
-                <label>🤖 AI Model</label>
+                <label>AI Model</label>
                 <select id="model">
                     <option value="chirp-v4-5">Chirp v4.5</option>
                     <option value="chirp-v5">Chirp v5 ⭐</option>
@@ -190,24 +191,45 @@
             </div>
             
             <div class="input-group">
-                <label>🎤 Voice Type</label>
+                <label>Techno Subgenre</label>
                 <select id="gender">
-                    <option value="">Auto</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="">Auto Select</option>
+                    <option value="Detroit Techno">Detroit Techno</option>
+                    <option value="Minimal Techno">Minimal Techno</option>
+                    <option value="Acid Techno">Acid Techno</option>
+                    <option value="Dub Techno">Dub Techno</option>
+                    <option value="Industrial Techno">Industrial Techno</option>
+                    <option value="Hard Techno">Hard Techno</option>
+                    <option value="Melodic Techno">Melodic Techno</option>
+                    <option value="Ambient Techno">Ambient Techno</option>
+                    <option value="Deep Techno">Deep Techno</option>
+                    <option value="Hardgroove Techno">Hardgroove Techno</option>
+                    <option value="Hypnotic Techno">Hypnotic Techno</option>
+                    <option value="Rave Techno">Rave Techno</option>
                 </select>
             </div>
             
-            <div class="input-group">
-                <label style="display: flex; align-items: center; gap: 10px;">
-                    <input type="checkbox" id="instrumental" style="width: auto; margin: 0;">
-                    🎹 Instrumental Only
-                </label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="instrumental">
+                <label for="instrumental">Instrumental Only</label>
             </div>
+            
+            <div class="input-group">
+                <label>Track Description</label>
+                <textarea id="description" rows="4" maxlength="400" 
+                    placeholder="Describe your perfect techno track... High-energy beats, hypnotic synths, driving basslines..."></textarea>
+                <div class="char-counter" id="charCounter">0/400</div>
+            </div>
+            
+            <button id="makeTechnoBtn" class="make-techno-btn">
+                🎵 Generate Techno
+            </button>
+            
+            <div id="statusCard" class="status-card"></div>
         </div>
         
-        <div class="card">
-            <div class="input-group">
+        <div id="results"></div>
+    </div>
                 <label>🎵 Describe Your Techno Track</label>
                 <textarea id="description" rows="4" maxlength="400" 
                     placeholder="A high-energy techno track with pounding 4/4 beats, hypnotic synthesizer loops, and driving basslines perfect for underground raves..."></textarea>
@@ -260,7 +282,13 @@
         // Main generation function
         makeTechnoBtn.addEventListener('click', async () => {
             const key = apiKey.value.trim();
-            const desc = description.value.trim();
+            let desc = description.value.trim();
+            const subgenre = gender.value.trim();
+            
+            // Add subgenre to description if selected
+            if (subgenre) {
+                desc = `${subgenre} style: ${desc}`;
+            }
             
             if (!key) return showStatus('🔑 Please enter your Udio API key', 'error');
             if (!desc) return showStatus('📝 Please describe your techno track', 'error');
@@ -281,7 +309,6 @@
                         model: model.value,
                         gpt_description_prompt: desc,
                         make_instrumental: instrumental.checked,
-                        gender: gender.value || undefined,
                         style_weight: 0.8,
                         weirdness_constraint: 0.6,
                         audio_weight: 0.7
