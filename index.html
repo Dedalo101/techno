@@ -3,30 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHNO</title>
+    <title>TECHNO Generator</title>
     <style>
         :root{
           --bg:#05050a;
+          --card:#071019;
           --accent:#00ff99;
           --neon:#ff0077;
           --muted:#6b6b6b;
+          --glass: rgba(255,255,255,0.04);
+          --radius:14px;
         }
+
         *{box-sizing:border-box}
-        html,body{height:100%;margin:0}
+        html,body{height:100%;margin:0;padding:0}
         body{
           font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
           background: radial-gradient(ellipse at top, #071018 0%, var(--bg) 40%);
           color:#fff;
+          -webkit-font-smoothing:antialiased;
+          line-height:1.3;
           display:flex;
           height:100vh;
           align-items:center;
           justify-content:center;
           padding:20px;
         }
+
         .card{
-          width:min(420px,92vw);
+          width:min(720px,92vw);
           background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-          border-radius:14px;
+          border-radius:var(--radius);
           padding:48px;
           display:flex;
           align-items:center;
@@ -35,14 +42,17 @@
           box-shadow:0 10px 40px rgba(0,0,0,0.6);
           border:1px solid rgba(255,255,255,0.03);
         }
+
         .logo{
           font-weight:800;
           font-size:2.8rem;
           letter-spacing:0.15em;
           color:var(--accent);
-          text-shadow:0 0 18px rgba(0,255,153,0.12);
+          text-shadow:0 0 18px rgba(0,255,153,0.12),0 0 36px rgba(255,0,119,0.04);
         }
+
         .neon-btn{
+          appearance:none;
           border:0;
           padding:18px 48px;
           border-radius:10px;
@@ -51,14 +61,23 @@
           font-weight:700;
           font-size:1.25rem;
           cursor:pointer;
-          box-shadow:0 6px 30px rgba(255,0,119,0.18);
-          transition: transform .12s ease;
+          box-shadow:0 6px 30px rgba(255,0,119,0.18), 0 0 40px rgba(0,255,153,0.04) inset;
+          transition: transform .12s ease, box-shadow .12s ease, filter .12s;
         }
-        .neon-btn:active{transform:translateY(1px)}
-        .neon-btn:disabled{opacity:.6;cursor:wait}
+        .neon-btn:active{transform:translateY(1px) scale(.998)}
+        .neon-btn:disabled{opacity:.6;filter:grayscale(.2);cursor:wait;animation:pulse 1.5s ease-in-out infinite}
+
+        @keyframes pulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
+
         .status{font-size:.95rem;color:var(--muted);min-height:1.2em;text-align:center}
-        .player{display:flex;gap:12px;align-items:center;flex-direction:column}
+
+        .player{display:flex;gap:12px;align-items:center;flex-direction:column;margin-top:20px}
         .download{color:var(--accent);text-decoration:none;border:1px solid rgba(0,255,153,0.12);padding:8px 14px;border-radius:8px}
+        a.download:focus, .neon-btn:focus {outline:3px solid rgba(0,255,153,0.12);outline-offset:4px}
+
         @media (max-width:520px){
           .card{padding:28px}
           .logo{font-size:2rem}
@@ -67,27 +86,34 @@
     </style>
 </head>
 <body>
-    <main class="card">
+    <div class="card">
         <div class="logo">TECHNO</div>
-        <button class="neon-btn" onclick="generateTechno()" id="btn">
+        <button class="neon-btn" onclick="makeTechno()" id="technoBtn">
             MAKE TECHNO
         </button>
         <div class="status" id="status"></div>
         <div class="player" id="player" style="display:none;">
-            <audio controls id="audio"></audio>
-            <a class="download" id="download">Download</a>
+            <audio controls id="audioPlayer" preload="none"></audio>
+            <a class="download" id="downloadLink" download="techno-track.mp3">⬇ DOWNLOAD</a>
         </div>
-    </main>
+    </div>
 
     <script>
-        async function generateTechno() {
-            const btn = document.getElementById('btn');
+        let isGenerating = false;
+        
+        async function makeTechno() {
+            if (isGenerating) return;
+            
+            const btn = document.getElementById('technoBtn');
             const status = document.getElementById('status');
             const player = document.getElementById('player');
+            const audio = document.getElementById('audioPlayer');
+            const downloadLink = document.getElementById('downloadLink');
             
+            isGenerating = true;
             btn.disabled = true;
             btn.textContent = 'GENERATING...';
-            status.textContent = 'Connecting to Udio API...';
+            status.textContent = '🎵 Creating your 20-second techno track...';
             player.style.display = 'none';
             
             try {
@@ -98,36 +124,82 @@
                         'Authorization': 'Bearer sk-6be589a8f1734207bd5fdf0655f81919'
                     },
                     body: JSON.stringify({
-                        "gpt_description_prompt": "High energy minimal techno track, 20 seconds, driving kick drum, rolling bassline, bright synth stabs, club music",
+                        "gpt_description_prompt": "High energy minimal techno track, exactly 20 seconds long, driving kick drum, rolling bassline, bright synth stabs, club music, dance floor anthem, electronic beats, 130 BPM",
                         "make_instrumental": true,
                         "model": "chirp-v3-5"
                     })
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
+                    const errorText = await response.text();
+                    throw new Error(`Udio API error: ${response.status}`);
                 }
                 
                 const data = await response.json();
                 
                 if (data.audio_url || data.url) {
-                    const audioUrl = data.audio_url || data.url;
-                    document.getElementById('audio').src = audioUrl;
-                    document.getElementById('download').href = audioUrl;
-                    player.style.display = 'flex';
-                    status.textContent = '🎵 Your techno track is ready!';
+                    showAudioPlayer(data.audio_url || data.url);
+                    status.textContent = '🎉 Your techno track is ready!';
+                } else if (data.job_id || data.id) {
+                    status.textContent = '⏳ Processing your track...';
+                    await pollForCompletion(data.job_id || data.id);
                 } else {
-                    status.textContent = 'Track generated, polling for completion...';
-                    // Could add polling logic here if needed
+                    throw new Error('No audio URL or job ID returned');
                 }
                 
             } catch (error) {
-                console.error('Error:', error);
                 status.textContent = `❌ Error: ${error.message}`;
             } finally {
+                isGenerating = false;
                 btn.disabled = false;
                 btn.textContent = 'MAKE TECHNO';
             }
+        }
+        
+        async function pollForCompletion(jobId) {
+            for (let i = 0; i < 30; i++) {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                try {
+                    const statusResponse = await fetch(`https://udioapi.pro/v2/status/${jobId}`, {
+                        headers: {
+                            'Authorization': 'Bearer sk-6be589a8f1734207bd5fdf0655f81919'
+                        }
+                    });
+                    
+                    if (statusResponse.ok) {
+                        const statusData = await statusResponse.json();
+                        
+                        if (statusData.status === 'completed' && (statusData.audio_url || statusData.url)) {
+                            showAudioPlayer(statusData.audio_url || statusData.url);
+                            document.getElementById('status').textContent = '🎉 Your techno track is ready!';
+                            return;
+                        }
+                        
+                        if (statusData.status === 'failed') {
+                            throw new Error('Track generation failed');
+                        }
+                        
+                        document.getElementById('status').textContent = `⏳ Processing... (${i + 1}/30)`;
+                    }
+                } catch (error) {
+                    console.error('Polling error:', error);
+                }
+            }
+            
+            throw new Error('Generation timed out');
+        }
+        
+        function showAudioPlayer(audioUrl) {
+            const player = document.getElementById('player');
+            const audio = document.getElementById('audioPlayer');
+            const downloadLink = document.getElementById('downloadLink');
+            
+            audio.src = audioUrl;
+            downloadLink.href = audioUrl;
+            player.style.display = 'flex';
+            
+            audio.play().catch(e => console.log('Auto-play prevented'));
         }
     </script>
 </body>
