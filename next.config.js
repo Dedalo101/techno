@@ -8,3 +8,5 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
+
+techno.agg.homes
