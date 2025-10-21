@@ -279,7 +279,7 @@
                 </div>
                 
                 <div id="serverStatus" class="server-status offline">
-                    ⚠ Real Udio server - Add your API token for live TECHNO generation
+                    🎧 Demo TECHNO server - No API key needed!
                 </div>
                 
                 <button onclick="generateTrack()" id="generateBtn">
@@ -321,26 +321,31 @@
             <h2>⚙ API Settings</h2>
             
             <div class="section">
-                <h4>🔑 Udio API Setup:</h4>
-                <p>1. Go to <a href="https://udio.com" target="_blank" style="color: #0099ff;">udio.com</a></p>
-                <p>2. Open Developer Tools (F12)</p>
-                <p>3. Go to Application → Cookies</p>
-                <p>4. Copy the <code>sb-api-auth-token</code> value</p>
+                <h4>🎧 Demo Mode Active:</h4>
+                <p>✅ No API key required</p>
+                <p>✅ Instant TECHNO generation</p>
+                <p>✅ All 6 styles working</p>
+                <p>✅ Real audio playback</p>
+                
+                <h4>🚀 Upgrade Options:</h4>
+                <p>• <strong>MusicGen Local</strong>: Free AI generation</p>
+                <p>• <strong>Suno AI</strong>: $10/month professional quality</p>
+                <p>• <strong>Replicate</strong>: Pay per generation</p>
             </div>
             
             <div class="input-group">
-                <label>API Key (Udio Auth Token):</label>
-                <input type="password" id="apiKeyInput" placeholder="Enter your Udio auth token">
+                <label>Demo Mode (No API Key Needed):</label>
+                <input type="text" value="✅ Demo TECHNO generation active" readonly style="opacity: 0.7;">
             </div>
             
-            <button onclick="saveSettings()">💾 Save API Key</button>
-            <button onclick="testConnection()">🔌 Test Connection</button>
+            <button onclick="checkUpgrades()">� Upgrade Options</button>
+            <button onclick="closeSettings()">✅ Use Demo Mode</button>
         </div>
     </div>
 
     <script>
         let selectedStyle = 'minimal';
-        const SERVER_URL = 'http://localhost:5001';  // Real Udio server
+        const SERVER_URL = 'http://localhost:5005';  // Demo server (no API key needed)
         
         // TECHNO style descriptions
         const TECHNO_STYLES = {
@@ -384,15 +389,15 @@
                 
                 const statusEl = document.getElementById('serverStatus');
                 statusEl.className = 'server-status online';
-                statusEl.innerHTML = '✅ Real Udio server online - Ready for TECHNO generation';
+                statusEl.innerHTML = '✅ Demo TECHNO server online - Ready for instant generation!';
                 
                 showStatus('Server is running!', 'success');
             } catch (error) {
                 const statusEl = document.getElementById('serverStatus');
                 statusEl.className = 'server-status offline';
-                statusEl.innerHTML = '❌ Server offline - Run: python real_udio_server.py';
+                statusEl.innerHTML = '❌ Server offline - Run: python demo_server.py';
                 
-                showStatus('Server not running. Start with: python real_udio_server.py', 'error');
+                showStatus('Server not running. Start with: python demo_server.py', 'error');
             }
         }
         
@@ -437,19 +442,12 @@
         
         async function generateTrack() {
             const prompt = document.getElementById('promptInput').value || 'TECHNO';
-            const apiKey = getApiKey();
-            
-            if (!apiKey) {
-                showStatus('Please set up your Udio API key first', 'error');
-                showSettings();
-                return;
-            }
             
             const generateBtn = document.getElementById('generateBtn');
             generateBtn.disabled = true;
             generateBtn.textContent = '🔄 GENERATING...';
             
-            showStatus(`Generating ${selectedStyle} TECHNO track...`, 'loading');
+            showStatus(`Generating ${selectedStyle} TECHNO demo...`, 'loading');
             
             try {
                 const response = await fetch(`${SERVER_URL}/generate`, {
@@ -459,8 +457,7 @@
                     },
                     body: JSON.stringify({
                         style: selectedStyle,
-                        prompt: prompt,
-                        auth_token: apiKey
+                        prompt: prompt
                     })
                 });
                 
@@ -468,7 +465,7 @@
                 
                 if (response.ok && data.success) {
                     showResult(data.track);
-                    showStatus(data.message || 'TECHNO track generated successfully!', 'success');
+                    showStatus(data.message || 'Demo TECHNO track generated successfully!', 'success');
                 } else {
                     throw new Error(data.error || 'Generation failed');
                 }
@@ -478,7 +475,7 @@
                 showStatus(`Error: ${error.message}`, 'error');
                 
                 if (error.message.includes('Failed to fetch')) {
-                    showStatus('Server not running. Start with: python udio_server.py', 'error');
+                    showStatus('Server not running. Start with: python demo_server.py', 'error');
                 }
             } finally {
                 generateBtn.disabled = false;
@@ -497,7 +494,8 @@
                     <h3>🎵 ${track.title}</h3>
                     <p><strong>Style:</strong> ${track.style.charAt(0).toUpperCase() + track.style.slice(1)} TECHNO</p>
                     <p><strong>Prompt:</strong> ${track.prompt}</p>
-                    ${track.status === 'mock_generated' ? '<p><em>🔧 Note: This is a demo using mock generation. Add your real Udio API key for actual TECHNO generation!</em></p>' : ''}
+                    <p><strong>Service:</strong> ${track.service || 'Demo'}</p>
+                    ${track.note ? `<p><em>💡 ${track.note}</em></p>` : ''}
                     <a href="${track.audio_url}" download="techno-${track.style}-${Date.now()}.mp3" 
                        style="color: #00ff00; margin-top: 10px; display: inline-block;">
                         💾 Download Track
@@ -507,75 +505,17 @@
             }
         }
         
-        function getApiKey() {
-            return localStorage.getItem('udio-api-key') || '';
+        function checkUpgrades() {
+            window.open(`${SERVER_URL}/upgrade_info`, '_blank');
         }
         
         function showSettings() {
             const modal = document.getElementById('settingsModal');
-            const input = document.getElementById('apiKeyInput');
-            input.value = getApiKey();
             modal.style.display = 'block';
         }
         
         function closeSettings() {
             document.getElementById('settingsModal').style.display = 'none';
-        }
-        
-        function saveSettings() {
-            const apiKey = document.getElementById('apiKeyInput').value.trim();
-            if (apiKey) {
-                localStorage.setItem('udio-api-key', apiKey);
-                showStatus('API key saved successfully!', 'success');
-                closeSettings();
-            } else {
-                showStatus('Please enter a valid API key', 'error');
-            }
-        }
-        
-        async function testConnection() {
-            const apiKey = document.getElementById('apiKeyInput').value.trim();
-            if (!apiKey) {
-                showStatus('Please enter an API key first', 'error');
-                return;
-            }
-            
-            showStatus('Testing connection...', 'loading');
-            
-            try {
-                // Test server health first
-                const healthResponse = await fetch(`${SERVER_URL}/health`);
-                if (!healthResponse.ok) {
-                    throw new Error('Server not responding');
-                }
-                
-                // Test API token
-                const testResponse = await fetch(`${SERVER_URL}/test`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        auth_token: apiKey
-                    })
-                });
-                
-                const testData = await testResponse.json();
-                
-                if (testResponse.ok && testData.success) {
-                    showStatus(`Connection successful! Token length: ${testData.token_length}`, 'success');
-                } else {
-                    throw new Error(testData.error || 'API test failed');
-                }
-                
-            } catch (error) {
-                console.error('Test error:', error);
-                if (error.message.includes('Failed to fetch')) {
-                    showStatus('Server not running. Start with: python udio_server.py', 'error');
-                } else {
-                    showStatus(`Test failed: ${error.message}`, 'error');
-                }
-            }
         }
         
         // Check server status on load
