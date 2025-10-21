@@ -279,7 +279,7 @@
                 </div>
                 
                 <div id="serverStatus" class="server-status offline">
-                    🎧 Demo TECHNO server - No API key needed!
+                    🤖 MusicGen AI server - Real TECHNO generation ready!
                 </div>
                 
                 <button onclick="generateTrack()" id="generateBtn">
@@ -321,31 +321,32 @@
             <h2>⚙ API Settings</h2>
             
             <div class="section">
-                <h4>🎧 Demo Mode Active:</h4>
+                <h4>🤖 MusicGen AI Active:</h4>
+                <p>✅ Real AI-generated TECHNO</p>
+                <p>✅ Meta's MusicGen model</p>
                 <p>✅ No API key required</p>
-                <p>✅ Instant TECHNO generation</p>
-                <p>✅ All 6 styles working</p>
-                <p>✅ Real audio playback</p>
+                <p>✅ Runs locally on your machine</p>
+                <p>✅ Professional quality output</p>
                 
-                <h4>🚀 Upgrade Options:</h4>
-                <p>• <strong>MusicGen Local</strong>: Free AI generation</p>
-                <p>• <strong>Suno AI</strong>: $10/month professional quality</p>
-                <p>• <strong>Replicate</strong>: Pay per generation</p>
+                <h4>� Model Status:</h4>
+                <p>• Downloads ~1.5GB on first use</p>
+                <p>• Generation takes 30-60 seconds</p>
+                <p>• GPU acceleration if available</p>
             </div>
             
             <div class="input-group">
-                <label>Demo Mode (No API Key Needed):</label>
-                <input type="text" value="✅ Demo TECHNO generation active" readonly style="opacity: 0.7;">
+                <label>MusicGen AI Status:</label>
+                <input type="text" value="🤖 Real AI generation active" readonly style="opacity: 0.7;">
             </div>
             
-            <button onclick="checkUpgrades()">� Upgrade Options</button>
-            <button onclick="closeSettings()">✅ Use Demo Mode</button>
+            <button onclick="preloadModel()">⚡ Preload Model</button>
+            <button onclick="closeSettings()">✅ Ready to Generate</button>
         </div>
     </div>
 
     <script>
         let selectedStyle = 'minimal';
-        const SERVER_URL = 'http://localhost:5005';  // Demo server (no API key needed)
+        const SERVER_URL = 'http://localhost:5006';  // MusicGen AI server
         
         // TECHNO style descriptions
         const TECHNO_STYLES = {
@@ -389,13 +390,13 @@
                 
                 const statusEl = document.getElementById('serverStatus');
                 statusEl.className = 'server-status online';
-                statusEl.innerHTML = '✅ Demo TECHNO server online - Ready for instant generation!';
+                statusEl.innerHTML = '✅ MusicGen AI server online - Real TECHNO generation ready!';
                 
                 showStatus('Server is running!', 'success');
             } catch (error) {
                 const statusEl = document.getElementById('serverStatus');
                 statusEl.className = 'server-status offline';
-                statusEl.innerHTML = '❌ Server offline - Run: python demo_server.py';
+                statusEl.innerHTML = '❌ Server offline - Run: python simple_musicgen_server.py';
                 
                 showStatus('Server not running. Start with: python demo_server.py', 'error');
             }
@@ -445,9 +446,9 @@
             
             const generateBtn = document.getElementById('generateBtn');
             generateBtn.disabled = true;
-            generateBtn.textContent = '🔄 GENERATING...';
+            generateBtn.textContent = '🤖 GENERATING AI...';
             
-            showStatus(`Generating ${selectedStyle} TECHNO demo...`, 'loading');
+            showStatus(`Generating ${selectedStyle} TECHNO with MusicGen AI... (may take 30-60 seconds)`, 'loading');
             
             try {
                 const response = await fetch(`${SERVER_URL}/generate`, {
@@ -457,7 +458,8 @@
                     },
                     body: JSON.stringify({
                         style: selectedStyle,
-                        prompt: prompt
+                        prompt: prompt,
+                        duration: 15  // 15 seconds for faster generation
                     })
                 });
                 
@@ -465,9 +467,9 @@
                 
                 if (response.ok && data.success) {
                     showResult(data.track);
-                    showStatus(data.message || 'Demo TECHNO track generated successfully!', 'success');
+                    showStatus(data.message || 'Real AI TECHNO generated successfully!', 'success');
                 } else {
-                    throw new Error(data.error || 'Generation failed');
+                    throw new Error(data.error || 'AI generation failed');
                 }
                 
             } catch (error) {
@@ -475,7 +477,7 @@
                 showStatus(`Error: ${error.message}`, 'error');
                 
                 if (error.message.includes('Failed to fetch')) {
-                    showStatus('Server not running. Start with: python demo_server.py', 'error');
+                    showStatus('Server not running. Start with: python simple_musicgen_server.py', 'error');
                 }
             } finally {
                 generateBtn.disabled = false;
@@ -507,6 +509,27 @@
         
         function checkUpgrades() {
             window.open(`${SERVER_URL}/upgrade_info`, '_blank');
+        }
+        
+        async function preloadModel() {
+            showStatus('⚡ Preloading MusicGen model... (may take 5+ minutes first time)', 'loading');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/load_model`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showStatus('✅ MusicGen model loaded and ready!', 'success');
+                } else {
+                    showStatus(`❌ Model loading failed: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Preload error: ${error.message}`, 'error');
+            }
         }
         
         function showSettings() {
