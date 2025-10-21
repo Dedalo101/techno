@@ -269,3 +269,196 @@ h1:hover {
     80% { transform: translate(2px, -2px); }
     100% { transform: translate(0); }
 }
+
+/* New styles for updated elements */
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header p {
+    opacity: 0.8;
+    margin-top: 10px;
+}
+
+.quota-section {
+    margin-bottom: 25px;
+}
+
+.quota-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.reset-btn {
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+    background: rgba(255, 107, 107, 0.3);
+}
+
+.subgenre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.subgenre-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.subgenre-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.5);
+}
+
+.subgenre-btn.active {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+    border-color: #00ffff;
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.generate-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    border: none;
+    color: #000;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.generate-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+}
+
+.generate-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.result {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.result h3 {
+    color: #00ffff;
+    margin-bottom: 15px;
+}
+
+#track-info {
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+#track-info h4 {
+    color: #ff00ff;
+    margin-bottom: 10px;
+}
+
+#track-info p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+#audio-player {
+    width: 100%;
+    margin: 15px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.download-section {
+    margin-top: 15px;
+}
+
+.download-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    color: #000;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+}
+
+.error {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 25px;
+    opacity: 0.6;
+    font-size: 12px;
+}
+
+.hidden {
+    display: none !important;
+}
