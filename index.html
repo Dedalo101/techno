@@ -1,1 +1,134 @@
-<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="next-head-count" content="2"/><link rel="preload" href="/_next/static/css/ddeea484ac047ae6.css" as="style"/><link rel="stylesheet" href="/_next/static/css/ddeea484ac047ae6.css" data-n-g=""/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-42372ed130431b0a.js"></script><script src="/_next/static/chunks/webpack-8fa1640cc84ba8fe.js" defer=""></script><script src="/_next/static/chunks/framework-64ad27b21261a9ce.js" defer=""></script><script src="/_next/static/chunks/main-a16c617c42bd88d0.js" defer=""></script><script src="/_next/static/chunks/pages/_app-87cee5540118d1b4.js" defer=""></script><script src="/_next/static/chunks/pages/index-af66a72b076edaf4.js" defer=""></script><script src="/_next/static/Oit1OB4QEUTk9w--qKZQJ/_buildManifest.js" defer=""></script><script src="/_next/static/Oit1OB4QEUTk9w--qKZQJ/_ssgManifest.js" defer=""></script></head><body><div id="__next"><main class="techno-root"><section class="card"><div class="logo">TECHNO</div><button class="neon-btn">MAKE TECHNO</button><div class="status"></div></section></main></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{}},"page":"/","query":{},"buildId":"Oit1OB4QEUTk9w--qKZQJ","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHNO</title>
+    <style>
+        :root{
+          --bg:#05050a;
+          --accent:#00ff99;
+          --neon:#ff0077;
+          --muted:#6b6b6b;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%;margin:0}
+        body{
+          font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+          background: radial-gradient(ellipse at top, #071018 0%, var(--bg) 40%);
+          color:#fff;
+          display:flex;
+          height:100vh;
+          align-items:center;
+          justify-content:center;
+          padding:20px;
+        }
+        .card{
+          width:min(420px,92vw);
+          background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+          border-radius:14px;
+          padding:48px;
+          display:flex;
+          align-items:center;
+          flex-direction:column;
+          gap:18px;
+          box-shadow:0 10px 40px rgba(0,0,0,0.6);
+          border:1px solid rgba(255,255,255,0.03);
+        }
+        .logo{
+          font-weight:800;
+          font-size:2.8rem;
+          letter-spacing:0.15em;
+          color:var(--accent);
+          text-shadow:0 0 18px rgba(0,255,153,0.12);
+        }
+        .neon-btn{
+          border:0;
+          padding:18px 48px;
+          border-radius:10px;
+          background: linear-gradient(90deg, var(--neon), #7f00ff);
+          color:#fff;
+          font-weight:700;
+          font-size:1.25rem;
+          cursor:pointer;
+          box-shadow:0 6px 30px rgba(255,0,119,0.18);
+          transition: transform .12s ease;
+        }
+        .neon-btn:active{transform:translateY(1px)}
+        .neon-btn:disabled{opacity:.6;cursor:wait}
+        .status{font-size:.95rem;color:var(--muted);min-height:1.2em;text-align:center}
+        .player{display:flex;gap:12px;align-items:center;flex-direction:column}
+        .download{color:var(--accent);text-decoration:none;border:1px solid rgba(0,255,153,0.12);padding:8px 14px;border-radius:8px}
+        @media (max-width:520px){
+          .card{padding:28px}
+          .logo{font-size:2rem}
+          .neon-btn{padding:14px 30px;font-size:1.05rem}
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <div class="logo">TECHNO</div>
+        <button class="neon-btn" onclick="generateTechno()" id="btn">
+            MAKE TECHNO
+        </button>
+        <div class="status" id="status"></div>
+        <div class="player" id="player" style="display:none;">
+            <audio controls id="audio"></audio>
+            <a class="download" id="download">Download</a>
+        </div>
+    </main>
+
+    <script>
+        async function generateTechno() {
+            const btn = document.getElementById('btn');
+            const status = document.getElementById('status');
+            const player = document.getElementById('player');
+            
+            btn.disabled = true;
+            btn.textContent = 'GENERATING...';
+            status.textContent = 'Connecting to Udio API...';
+            player.style.display = 'none';
+            
+            try {
+                const response = await fetch('https://udioapi.pro/v2/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer sk-6be589a8f1734207bd5fdf0655f81919'
+                    },
+                    body: JSON.stringify({
+                        "gpt_description_prompt": "High energy minimal techno track, 20 seconds, driving kick drum, rolling bassline, bright synth stabs, club music",
+                        "make_instrumental": true,
+                        "model": "chirp-v3-5"
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.audio_url || data.url) {
+                    const audioUrl = data.audio_url || data.url;
+                    document.getElementById('audio').src = audioUrl;
+                    document.getElementById('download').href = audioUrl;
+                    player.style.display = 'flex';
+                    status.textContent = '🎵 Your techno track is ready!';
+                } else {
+                    status.textContent = 'Track generated, polling for completion...';
+                    // Could add polling logic here if needed
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                status.textContent = `❌ Error: ${error.message}`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'MAKE TECHNO';
+            }
+        }
+    </script>
+</body>
+</html>
