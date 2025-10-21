@@ -1,15 +1,7 @@
-# Exclude large files
 node_modules/
-dist/
-build/
+electron-app/
+_next/
 out/
-*.exe
-*.dmg
-*.AppImage
-**electron**
-*.zip
-*.tar.gz
-temp/
-.DS_Store
 *.log
-public/TECHNO-Generator*
+.env.local
+.DS_Store
