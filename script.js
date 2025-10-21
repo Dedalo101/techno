@@ -1,106 +1,52 @@
 const SUNO_COOKIE = 'eyJhbGciOiJSUzI1NiIsImNhdCI6ImNsX0I3ZDRQRDExMUFBQSIsImtpZCI6Imluc18yT1o2eU1EZzhscWRKRWloMXJvemY4T3ptZG4iLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJzdW5vLWFwaSIsImF6cCI6Imh0dHBzOi8vc3Vuby5jb20iLCJleHAiOjE3NjEwNTc4MDAsImZ2YSI6WzAsLTFdLCJodHRwczovL3N1bm8uYWkvY2xhaW1zL2NsZXJrX2lkIjoidXNlcl8zNE5WbVZsZk5NTFR4UWQ1YWpvbDNZdnFIaE4iLCJodHRwczovL3N1bm8uYWkvY2xhaW1zL2VtYWlsIjoiYXp4Y3Z0cmV3QGdtYWlsLmNvbSIsImh0dHBzOi8vc3Vuby5haS9jbGFpbXMvcGhvbmUiOm51bGwsImlhdCI6MTc2MTA1NDIwMCwiaXNzIjoiaHR0cHM6Ly9jbGVyay5zdW5vLmNvbSIsImp0aSI6IjhhNDIyYTUzOTdkNDhlZDI5NWZlIiwibmJmIjoxNzYxMDU0MTkwLCJzaWQiOiJzZXNzXzM0TlZtWDhjZUo0SUhsdElxWFJGdHlLZWFmZCIsInN0cyI6ImFjdGl2ZSIsInN1YiI6InVzZXJfMzROVm1WbGZOTUxUeFFkNWFqb2wzWXZxSGhOIn0.NWjhr7jekVmkw74E0XInhB8dNpgrfWMFSA1Btyevmy0pN2IksvCa0nWumqsl_Gw63yakxbe2LIUKS2jczQCte7I01ItdXRX3MxhTV0G-_INSjtrXsHo1KP9s1VACFm1hZyEPbb3Ldu0j8Bi21k1s1rFTW-2GBepg4nUiRqB9PuuK48s7-IZ2_NpZjvv7_UQ9Y_OckwdgOz851Lt2Qf3CmlKimozp76i0kw1vEnvFOVb6zoPgSmF28Ql2mdylWxzMkO4AwuFkr0RbMv2-F-tSKP9VQtfWF3tyTy7-jqpDQWeCVVU6J5FIt3EU20POZR80hv0UOaQiFqeuTtPiIaXWcg';
 
-class TechnoGenerator {
-    constructor() {
-        this.quotaCount = 10;
-        this.selectedStyle = 'industrial';
-        this.isGenerating = false;
-        this.init();
+let quotaCount = 10;
+let isGenerating = false;
+
+// Initialize quota on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedQuota = localStorage.getItem('techno-quota');
+    if (savedQuota) {
+        quotaCount = parseInt(savedQuota);
     }
+    checkDailyReset();
+    updateQuotaDisplay();
+});
 
-    init() {
-        this.loadQuota();
-        this.checkDailyReset();
-        this.setupEventListeners();
-        this.updateQuotaDisplay();
-    }
-
-    setupEventListeners() {
-        // Subgenre selection
-        document.querySelectorAll('.subgenre-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.subgenre-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                this.selectedStyle = e.target.dataset.style;
-            });
-        });
-
-        // Set default selection
-        document.querySelector('.subgenre-btn[data-style="industrial"]').classList.add('active');
-
-        // Generate button
-        document.getElementById('generate-btn').addEventListener('click', () => {
-            this.generateTrack();
-        });
-
-        // Reset quota button
-        document.getElementById('reset-quota').addEventListener('click', () => {
-            this.resetQuota();
-        });
-    }
-
-    loadQuota() {
-        const savedQuota = localStorage.getItem('techno-quota');
-        if (savedQuota) {
-            this.quotaCount = parseInt(savedQuota);
-        }
-    }
-
-    checkDailyReset() {
-        const lastReset = localStorage.getItem('techno-last-reset');
-        const today = new Date().toDateString();
-        if (lastReset !== today) {
-            this.quotaCount = 10;
-            localStorage.setItem('techno-quota', '10');
-            localStorage.setItem('techno-last-reset', today);
-        }
-    }
-
-    updateQuotaDisplay() {
-        document.getElementById('quota-display').textContent = `Daily quota: ${this.quotaCount}/10`;
-    }
-
-    resetQuota() {
-        this.quotaCount = 10;
+function checkDailyReset() {
+    const lastReset = localStorage.getItem('techno-last-reset');
+    const today = new Date().toDateString();
+    if (lastReset !== today) {
+        quotaCount = 10;
         localStorage.setItem('techno-quota', '10');
-        localStorage.setItem('techno-last-reset', new Date().toDateString());
-        this.updateQuotaDisplay();
-        this.hideError();
+        localStorage.setItem('techno-last-reset', today);
+    }
+}
+
+function updateQuotaDisplay() {
+    document.getElementById('quota-count').textContent = quotaCount;
+}
+
+async function generateTrack() {
+    if (isGenerating || quotaCount <= 0) {
+        document.getElementById('result').innerHTML = '<div style="color:#ff6b6b">Daily quota exceeded!</div>';
+        return;
+    }
+    
+    const subgenre = document.getElementById('subgenre').value;
+    const prompt = document.getElementById('prompt').value.trim();
+    
+    if (!prompt) {
+        document.getElementById('result').innerHTML = '<div style="color:#ff6b6b">Please enter a prompt</div>';
+        return;
     }
 
-    async generateTrack() {
-        if (this.isGenerating || this.quotaCount <= 0) {
-            this.showError('Daily quota exceeded! Reset or wait for tomorrow.');
-            return;
-        }
+    startGeneration();
+    
+    try {
+        const enhancedPrompt = createEnhancedPrompt(subgenre, prompt);
+        console.log('Generating with prompt:', enhancedPrompt);
         
-        this.startGeneration();
-        
-        try {
-            const prompt = this.createEnhancedPrompt(this.selectedStyle);
-            const data = await this.callSunoAPI(prompt);
-            this.showResult(data);
-            this.updateQuota();
-        } catch (error) {
-            console.error('Generation error:', error);
-            this.showError(`Generation failed: ${error.message}`);
-        } finally {
-            this.stopGeneration();
-        }
-    }
-
-    createEnhancedPrompt(style) {
-        const prompts = {
-            industrial: 'Industrial techno THENO track, heavy distorted kicks, mechanical percussion, dark atmosphere, 128 BPM',
-            acid: 'Acid techno THENO track, TB-303 basslines, squelchy synths, hypnotic patterns, 130 BPM',
-            minimal: 'Minimal techno THENO track, repetitive loops, subtle progression, deep bass, 124 BPM',
-            hardtechno: 'Hard techno THENO track, aggressive kicks, driving bassline, intense energy, 135 BPM',
-            detroit: 'Detroit techno THENO track, futuristic sounds, emotional melodies, classic 909 drums, 126 BPM'
-        };
-        return prompts[style] || prompts.industrial;
-    }
-
-    async callSunoAPI(prompt) {
         const response = await fetch('https://suno-api-zeta-wine.vercel.app/api/generate', {
             method: 'POST',
             headers: {
@@ -108,93 +54,83 @@ class TechnoGenerator {
                 'Authorization': `Bearer ${SUNO_COOKIE}`
             },
             body: JSON.stringify({
-                prompt: prompt,
+                prompt: enhancedPrompt,
                 make_instrumental: true,
                 wait_audio: true
             })
         });
 
+        console.log('Response status:', response.status);
+        
         if (!response.ok) {
-            throw new Error(`API error: ${response.status} ${response.statusText}`);
+            const errorText = await response.text();
+            console.error('API Error:', errorText);
+            throw new Error(`API error: ${response.status} - ${errorText}`);
         }
         
         const data = await response.json();
+        console.log('API Response:', data);
         
         if (!data || !Array.isArray(data) || data.length === 0) {
             throw new Error('No tracks generated');
         }
         
-        return data[0];
-    }
-
-    showResult(track) {
-        if (!track || !track.audio_url) {
-            throw new Error('Invalid track data received');
-        }
-
-        const resultDiv = document.getElementById('result');
-        const trackInfoDiv = document.getElementById('track-info');
-        const audioPlayer = document.getElementById('audio-player');
-        const audioSource = document.getElementById('audio-source');
-        const downloadLink = document.getElementById('download-link');
-
-        trackInfoDiv.innerHTML = `
-            <h4>${track.title || 'THENO Track'}</h4>
-            <p>Style: ${this.selectedStyle.charAt(0).toUpperCase() + this.selectedStyle.slice(1)}</p>
-            <p>Duration: ~20 seconds</p>
-        `;
-
-        audioSource.src = track.audio_url;
-        audioPlayer.load();
-        downloadLink.href = track.audio_url;
-        downloadLink.download = `theno-${this.selectedStyle}-${Date.now()}.mp3`;
-
-        resultDiv.classList.remove('hidden');
-        this.hideError();
-    }
-
-    showError(message) {
-        const errorDiv = document.getElementById('error');
-        errorDiv.textContent = message;
-        errorDiv.classList.remove('hidden');
-        document.getElementById('result').classList.add('hidden');
-    }
-
-    hideError() {
-        document.getElementById('error').classList.add('hidden');
-    }
-
-    startGeneration() {
-        this.isGenerating = true;
-        const btnText = document.getElementById('btn-text');
-        const loading = document.getElementById('loading');
+        showResult(data[0]);
+        updateQuota();
         
-        btnText.classList.add('hidden');
-        loading.classList.remove('hidden');
-        document.getElementById('generate-btn').disabled = true;
-        
-        document.getElementById('result').classList.add('hidden');
-        this.hideError();
-    }
-
-    stopGeneration() {
-        this.isGenerating = false;
-        const btnText = document.getElementById('btn-text');
-        const loading = document.getElementById('loading');
-        
-        loading.classList.add('hidden');
-        btnText.classList.remove('hidden');
-        document.getElementById('generate-btn').disabled = false;
-    }
-
-    updateQuota() {
-        this.quotaCount--;
-        localStorage.setItem('techno-quota', this.quotaCount.toString());
-        this.updateQuotaDisplay();
+    } catch (error) {
+        console.error('Generation error:', error);
+        document.getElementById('result').innerHTML = `<div style="color:#ff6b6b">Generation failed: ${error.message}</div>`;
+    } finally {
+        stopGeneration();
     }
 }
 
-// Initialize the generator when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    new TechnoGenerator();
-});
+function createEnhancedPrompt(subgenre, userPrompt) {
+    const prompts = {
+        minimal: `Minimal techno: hypnotic loops, ${userPrompt}`,
+        acid: `Acid techno: TB-303 basslines, ${userPrompt}`,
+        hard: `Hard techno: aggressive kicks, ${userPrompt}`,
+        melodic: `Melodic techno: emotional progressions, ${userPrompt}`,
+        dub: `Dub techno: deep reverb, spacious mix, ${userPrompt}`
+    };
+    return prompts[subgenre] || userPrompt;
+}
+
+function showResult(track) {
+    if (!track || !track.audio_url) {
+        document.getElementById('result').innerHTML = '<div style="color:#ff6b6b">Invalid track data received</div>';
+        return;
+    }
+
+    document.getElementById('result').innerHTML = `
+        <div style="background:#1a1a2e;padding:20px;border-radius:10px;margin:10px 0">
+            <h3>🎵 ${track.title || 'Generated Track'}</h3>
+            <audio controls style="width:100%;margin:10px 0">
+                <source src="${track.audio_url}" type="audio/mpeg">
+            </audio>
+            <a href="${track.audio_url}" download style="display:block;background:#00ffff;color:#000;padding:10px;text-align:center;border-radius:5px;text-decoration:none;margin:10px 0">Download MP3</a>
+        </div>
+    `;
+}
+
+function startGeneration() {
+    isGenerating = true;
+    document.querySelector('button').textContent = 'GENERATING...';
+    document.querySelector('button').disabled = true;
+    document.getElementById('progress').innerHTML = 'Generating track...';
+    document.getElementById('result').innerHTML = '';
+}
+
+function stopGeneration() {
+    isGenerating = false;
+    document.querySelector('button').textContent = 'GENERATE';
+    document.querySelector('button').disabled = false;
+    document.getElementById('progress').innerHTML = '';
+}
+
+function updateQuota() {
+    quotaCount--;
+    localStorage.setItem('techno-quota', quotaCount.toString());
+    updateQuotaDisplay();
+}
