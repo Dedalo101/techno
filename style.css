@@ -1,11 +1,123 @@
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.container{max-width:400px;width:100%;background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border-radius:20px;padding:30px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5)}h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:25px;background:linear-gradient(135deg,#00ffff,#ff00ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}.generator{display:flex;flex-direction:column;gap:15px}select,input{width:100%;padding:15px;font-size:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;font-family:inherit}select:focus,input:focus{outline:none;border-color:#00ffff;box-shadow:0 0 0 2px rgba(0,255,255,0.1)}select option{background:#1a1a2e;color:#fff}button{width:100%;padding:15px;font-size:16px;font-weight:700;background:linear-gradient(135deg,#00ffff,#ff00ff);color:#000;border:none;border-radius:10px;cursor:pointer;text-transform:uppercase;letter-spacing:1px}button:hover{transform:translateY(-1px)}button:disabled{opacity:0.6;cursor:not-allowed;transform:none}#progress{color:#ffff00;text-align:center;padding:10px}#result{margin-top:15px}p{text-align:center;color:#ccc;font-size:14px}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-.progress {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-    transition: opacity 0.3s ease;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 400px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.generator {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+select, input {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: #fff;
+    font-family: inherit;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
+}
+
+select option {
+    background: #1a1a2e;
+    color: #fff;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#progress {
+    color: #ffff00;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+#result {
+    margin-top: 15px;
+}
+
+p {
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
 }
 
 .progress::after {
