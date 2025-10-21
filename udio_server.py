@@ -4,11 +4,7 @@ Simple Udio TECHNO Generator Server
 Direct API integration for reliable TECHNO generation
 """
 
-from flask import Flask, request, jsonify, render_template_string
-from flask_cors import CORS
-import os
-import sys
-import time
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import json
@@ -153,4 +149,9 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print(f"🎵 Starting UDIO TECHNO Generator on port {port}")
     print("Available styles:", list(TECHNO_STYLES.keys()))
+    print("📡 Server URL: http://localhost:" + str(port))
+    print("🔧 Note: Development server warning is normal for local testing")
+    print("=" * 60)
+    
+    # Run with minimal output
     app.run(host='0.0.0.0', port=port, debug=True)

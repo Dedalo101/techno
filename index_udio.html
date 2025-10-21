@@ -286,6 +286,10 @@
                     ▶ GENERATE TECHNO
                 </button>
                 
+                <button onclick="testGeneration()" id="testBtn" style="background: #440066;">
+                    🧪 TEST MODE
+                </button>
+                
                 <button onclick="showSettings()" id="settingsBtn">
                     ⚙ API Settings
                 </button>
@@ -389,6 +393,45 @@
                 statusEl.innerHTML = '❌ Server offline - Run: python udio_server.py';
                 
                 showStatus('Server not running. Start with: python udio_server.py', 'error');
+            }
+        }
+        
+        async function testGeneration() {
+            const prompt = document.getElementById('promptInput').value || 'TECHNO';
+            
+            const testBtn = document.getElementById('testBtn');
+            testBtn.disabled = true;
+            testBtn.textContent = '🧪 TESTING...';
+            
+            showStatus(`Testing ${selectedStyle} TECHNO generation...`, 'loading');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/test`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        style: selectedStyle,
+                        prompt: prompt
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showResult(data.track);
+                    showStatus('Test successful! Mock TECHNO track generated.', 'success');
+                } else {
+                    throw new Error(data.error || 'Test failed');
+                }
+                
+            } catch (error) {
+                console.error('Test Error:', error);
+                showStatus(`Test Error: ${error.message}`, 'error');
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = '🧪 TEST MODE';
             }
         }
         
