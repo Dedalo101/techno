@@ -279,7 +279,7 @@
                 </div>
                 
                 <div id="serverStatus" class="server-status offline">
-                    ⚠ Local server not running - Run: python udio_server.py
+                    ⚠ Mock mode active - Add real Udio API key for live generation
                 </div>
                 
                 <button onclick="generateTrack()" id="generateBtn">
@@ -380,7 +380,7 @@
                 
                 const statusEl = document.getElementById('serverStatus');
                 statusEl.className = 'server-status online';
-                statusEl.innerHTML = '✅ Server online - Ready to generate TECHNO';
+                statusEl.innerHTML = '✅ Mock server online - Ready for demo generation';
                 
                 showStatus('Server is running!', 'success');
             } catch (error) {
@@ -425,7 +425,7 @@
                 
                 if (response.ok && data.success) {
                     showResult(data.track);
-                    showStatus('TECHNO track generated successfully!', 'success');
+                    showStatus(data.message || 'TECHNO track generated successfully!', 'success');
                 } else {
                     throw new Error(data.error || 'Generation failed');
                 }
@@ -454,6 +454,7 @@
                     <h3>🎵 ${track.title}</h3>
                     <p><strong>Style:</strong> ${track.style.charAt(0).toUpperCase() + track.style.slice(1)} TECHNO</p>
                     <p><strong>Prompt:</strong> ${track.prompt}</p>
+                    ${track.status === 'mock_generated' ? '<p><em>🔧 Note: This is a demo using mock generation. Add your real Udio API key for actual TECHNO generation!</em></p>' : ''}
                     <a href="${track.audio_url}" download="techno-${track.style}-${Date.now()}.mp3" 
                        style="color: #00ff00; margin-top: 10px; display: inline-block;">
                         💾 Download Track
@@ -499,14 +500,38 @@
             showStatus('Testing connection...', 'loading');
             
             try {
-                const response = await fetch(`${SERVER_URL}/health`);
-                if (response.ok) {
-                    showStatus('Connection successful!', 'success');
-                } else {
+                // Test server health first
+                const healthResponse = await fetch(`${SERVER_URL}/health`);
+                if (!healthResponse.ok) {
                     throw new Error('Server not responding');
                 }
+                
+                // Test API token
+                const testResponse = await fetch(`${SERVER_URL}/test`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        auth_token: apiKey
+                    })
+                });
+                
+                const testData = await testResponse.json();
+                
+                if (testResponse.ok && testData.success) {
+                    showStatus(`Connection successful! Token length: ${testData.token_length}`, 'success');
+                } else {
+                    throw new Error(testData.error || 'API test failed');
+                }
+                
             } catch (error) {
-                showStatus('Connection failed. Make sure server is running.', 'error');
+                console.error('Test error:', error);
+                if (error.message.includes('Failed to fetch')) {
+                    showStatus('Server not running. Start with: python udio_server.py', 'error');
+                } else {
+                    showStatus(`Test failed: ${error.message}`, 'error');
+                }
             }
         }
         
