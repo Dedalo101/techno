@@ -117,6 +117,8 @@
             player.style.display = 'none';
             
             try {
+                console.log('Calling Udio API...');
+                
                 const response = await fetch('https://udioapi.pro/v2/generate', {
                     method: 'POST',
                     headers: {
@@ -130,12 +132,16 @@
                     })
                 });
                 
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
                     const errorText = await response.text();
+                    console.error('API Error:', errorText);
                     throw new Error(`Udio API error: ${response.status}`);
                 }
                 
                 const data = await response.json();
+                console.log('Udio Response:', data);
                 
                 if (data.audio_url || data.url) {
                     showAudioPlayer(data.audio_url || data.url);
@@ -148,6 +154,7 @@
                 }
                 
             } catch (error) {
+                console.error('Generation Error:', error);
                 status.textContent = `❌ Error: ${error.message}`;
             } finally {
                 isGenerating = false;
@@ -157,7 +164,9 @@
         }
         
         async function pollForCompletion(jobId) {
-            for (let i = 0; i < 30; i++) {
+            const maxAttempts = 30;
+            
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
                 await new Promise(resolve => setTimeout(resolve, 3000));
                 
                 try {
@@ -169,6 +178,7 @@
                     
                     if (statusResponse.ok) {
                         const statusData = await statusResponse.json();
+                        console.log(`Poll ${attempt}:`, statusData);
                         
                         if (statusData.status === 'completed' && (statusData.audio_url || statusData.url)) {
                             showAudioPlayer(statusData.audio_url || statusData.url);
@@ -180,14 +190,14 @@
                             throw new Error('Track generation failed');
                         }
                         
-                        document.getElementById('status').textContent = `⏳ Processing... (${i + 1}/30)`;
+                        document.getElementById('status').textContent = `⏳ Processing... (${attempt}/${maxAttempts})`;
                     }
                 } catch (error) {
                     console.error('Polling error:', error);
                 }
             }
             
-            throw new Error('Generation timed out');
+            throw new Error('Generation timed out after 90 seconds');
         }
         
         function showAudioPlayer(audioUrl) {
@@ -199,8 +209,10 @@
             downloadLink.href = audioUrl;
             player.style.display = 'flex';
             
-            audio.play().catch(e => console.log('Auto-play prevented'));
+            audio.play().catch(e => console.log('Auto-play prevented by browser'));
         }
+        
+        console.log('TECHNO Generator loaded and ready!');
     </script>
 </body>
 </html>
