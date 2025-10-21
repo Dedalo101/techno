@@ -179,9 +179,15 @@
                 (count > 350 ? ' danger' : count > 300 ? ' warning' : '');
         });
 
-        // Load saved API key
+        // Load saved API key or set default
         const savedKey = localStorage.getItem('udioApiKey');
-        if (savedKey) apiKey.value = savedKey;
+        const defaultKey = 'sk-6be589a8f1734207bd5fdf0655f81919';
+        if (savedKey) {
+            apiKey.value = savedKey;
+        } else {
+            apiKey.value = defaultKey;
+            localStorage.setItem('udioApiKey', defaultKey);
+        }
 
         // Save API key
         apiKey.addEventListener('change', () => 
@@ -207,6 +213,7 @@
                         'Authorization': `Bearer ${key}`,
                         'Content-Type': 'application/json'
                     },
+                    mode: 'cors',
                     body: JSON.stringify({
                         model: model.value,
                         gpt_description_prompt: desc,
@@ -218,6 +225,10 @@
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
                 const result = await response.json();
                 
                 if (result.code === 200) {
@@ -227,7 +238,12 @@
                     throw new Error(result.message || 'Generation failed');
                 }
             } catch (error) {
-                showStatus(`❌ Error: ${error.message}`, 'error');
+                console.error('API Error:', error);
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showStatus('❌ Network error: Check your connection and API endpoint', 'error');
+                } else {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
             } finally {
                 makeTechnoBtn.disabled = false;
                 makeTechnoBtn.textContent = '🎵 MAKE TECHNO';
