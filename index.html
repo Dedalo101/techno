@@ -1,5 +1,49 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AI Techno - techno.agg.homes</title><style>body{background:#000;color:#0f0;font-family:'Courier New',monospace;margin:0;padding:20px}*{box-sizing:border-box}.container{max-width:600px;margin:0 auto;text-align:center}h1{font-size:2em;text-transform:uppercase;margin-bottom:30px}select,input,button{background:#111;color:#0f0;border:1px solid #0f0;padding:12px;margin:5px;font-family:inherit;width:200px}button{cursor:pointer;width:auto;padding:12px 24px;font-size:16px}.progress{height:5px;background:#333;margin:20px 0;border-radius:3px;overflow:hidden}#result{margin:20px 0;padding:20px;border:1px solid #0f0;border-radius:5px}#quota{font-size:0.9em;opacity:0.7}.loading{width:100%;background:#0f0;height:5px;animation:pulse 1s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}</style></head><body><div class="container"><h1>🤖 AI TECHNO GENERATOR</h1><div class="generator"><select id="subgenre"><option value="minimal">Minimal Techno</option><option value="acid">Acid Techno</option><option value="hard">Hard Techno</option><option value="melodic">Melodic Techno</option><option value="dub">Dub Techno</option></select><input type="text" id="prompt" placeholder="Dark warehouse, 130 BPM..." value="THENO"><button onclick="generateTrack()">GENERATE TRACK</button><div id="progress" class="progress"></div><div id="result"></div><p id="quota">Songs left: <span id="quota-count">10</span></p></div></div><script>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AI Techno - techno.agg.homes</title><style>body{background:#000;color:#0f0;font-family:'Courier New',monospace;margin:0;padding:20px}*{box-sizing:border-box}.container{max-width:600px;margin:0 auto;text-align:center}h1{font-size:2em;text-transform:uppercase;margin-bottom:30px}select,input,button{background:#111;color:#0f0;border:1px solid #0f0;padding:12px;margin:5px;font-family:inherit;width:200px}button{cursor:pointer;width:auto;padding:12px 24px;font-size:16px}.progress{height:5px;background:#333;margin:20px 0;border-radius:3px;overflow:hidden}#result{margin:20px 0;padding:20px;border:1px solid #0f0;border-radius:5px}#quota{font-size:0.9em;opacity:0.7}.loading{width:100%;background:#0f0;height:5px;animation:pulse 1s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}</style></head><body><div class="container"><h1>🤖 AI TECHNO GENERATOR</h1><div class="generator"><select id="subgenre"><option value="minimal">Minimal Techno</option><option value="acid">Acid Techno</option><option value="hard">Hard Techno</option><option value="melodic">Melodic Techno</option><option value="dub">Dub Techno</option></select><input type="text" id="prompt" placeholder="Dark warehouse, 130 BPM..." value="TECHNO"><button onclick="generateTrack()">GENERATE TRACK</button><button onclick="showSettings()" style="background:#333;width:auto;margin-left:5px">⚙️ API</button><div id="progress" class="progress"></div><div id="result"></div><p id="quota">Songs left: <span id="quota-count">10</span></p></div></div><script>
 const SUNO_COOKIE = 'eyJhbGciOiJSUzI1NiIsImNhdCI6ImNsX0I3ZDRQRDExMUFBQSIsImtpZCI6Imluc18yT1o2eU1EZzhscWRKRWloMXJvemY4T3ptZG4iLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJzdW5vLWFwaSIsImF6cCI6Imh0dHBzOi8vc3Vuby5jb20iLCJleHAiOjE3NjEwNTc4MDAsImZ2YSI6WzAsLTFdLCJodHRwczovL3N1bm8uYWkvY2xhaW1zL2NsZXJrX2lkIjoidXNlcl8zNE5WbVZsZk5NTFR4UWQ1YWpvbDNZdnFIaE4iLCJodHRwczovL3N1bm8uYWkvY2xhaW1zL2VtYWlsIjoiYXp4Y3Z0cmV3QGdtYWlsLmNvbSIsImh0dHBzOi8vc3Vuby5haS9jbGFpbXMvcGhvbmUiOm51bGwsImlhdCI6MTc2MTA1NDIwMCwiaXNzIjoiaHR0cHM6Ly9jbGVyay5zdW5vLmNvbSIsImp0aSI6IjhhNDIyYTUzOTdkNDhlZDI5NWZlIiwibmJmIjoxNzYxMDU0MTkwLCJzaWQiOiJzZXNzXzM0TlZtWDhjZUo0SUhsdElxWFJGdHlLZWFmZCIsInN0cyI6ImFjdGl2ZSIsInN1YiI6InVzZXJfMzROVm1WbGZOTUxUeFFkNWFqb2wzWXZxSGhOIn0.NWjhr7jekVmkw74E0XInhB8dNpgrfWMFSA1Btyevmy0pN2IksvCa0nWumqsl_Gw63yakxbe2LIUKS2jczQCte7I01ItdXRX3MxhTV0G-_INSjtrXsHo1KP9s1VACFm1hZyEPbb3Ldu0j8Bi21k1s1rFTW-2GBepg4nUiRqB9PuuK48s7-IZ2_NpZjvv7_UQ9Y_OckwdgOz851Lt2Qf3CmlKimozp76i0kw1vEnvFOVb6zoPgSmF28Ql2mdylWxzMkO4AwuFkr0RbMv2-F-tSKP9VQtfWF3tyTy7-jqpDQWeCVVU6J5FIt3EU20POZR80hv0UOaQiFqeuTtPiIaXWcg';
+
+function getApiKey() {
+    return localStorage.getItem('suno-api-key') || SUNO_COOKIE;
+}
+
+function showSettings() {
+    const currentKey = localStorage.getItem('suno-api-key') || '';
+    const result = document.getElementById('result');
+    result.innerHTML = `
+        <h3>⚙️ API Settings</h3>
+        <p style="font-size:0.9em;opacity:0.8;margin:10px 0">Enter your Suno API key if the default isn't working:</p>
+        <input type="password" id="api-key-input" placeholder="Suno API JWT Token..." value="${currentKey}" style="width:100%;font-size:12px;margin:10px 0">
+        <br>
+        <button onclick="saveApiKey()" style="background:#0f0;color:#000;margin:5px">💾 SAVE</button>
+        <button onclick="clearApiKey()" style="background:#f50;color:#fff;margin:5px">🗑️ CLEAR</button>
+        <button onclick="hideSettings()" style="background:#333;margin:5px">❌ CLOSE</button>
+        <br><br>
+        <p style="font-size:0.8em;opacity:0.6">
+            💡 Get your API key from: <br>
+            • suno.com (login required)<br>
+            • Check browser cookies for 'sunoaitoken'<br>
+            • Or use developer tools to extract JWT
+        </p>
+    `;
+}
+
+function saveApiKey() {
+    const key = document.getElementById('api-key-input').value.trim();
+    if (key) {
+        localStorage.setItem('suno-api-key', key);
+        document.getElementById('result').innerHTML = '✅ API key saved! Try generating a track now.';
+    } else {
+        document.getElementById('result').innerHTML = '❌ Please enter a valid API key.';
+    }
+}
+
+function clearApiKey() {
+    localStorage.removeItem('suno-api-key');
+    document.getElementById('result').innerHTML = '🗑️ API key cleared. Using default key.';
+}
+
+function hideSettings() {
+    document.getElementById('result').innerHTML = '';
+}
 
 const TECHNO_TEMPLATES = {
     minimal: "stripped minimal techno, hypnotic repetition, 130 BPM",
@@ -11,7 +55,7 @@ const TECHNO_TEMPLATES = {
 
 async function generateTrack() {
     const subgenre = document.getElementById('subgenre').value;
-    const prompt = document.getElementById('prompt').value || 'THENO track';
+    const prompt = document.getElementById('prompt').value || 'TECHNO track';
     const fullPrompt = `Industrial techno ${prompt}, ${TECHNO_TEMPLATES[subgenre]}, heavy distorted kicks, mechanical percussion, dark atmosphere, 128 BPM`;
     const progress = document.getElementById('progress');
     const result = document.getElementById('result');
@@ -44,7 +88,7 @@ async function generateTrack() {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${SUNO_COOKIE}`
+                            'Authorization': `Bearer ${getApiKey()}`
                         },
                         body: JSON.stringify({
                             prompt: fullPrompt,
@@ -71,9 +115,9 @@ async function generateTrack() {
         
         if (data && data[0] && data[0].audio_url) {
             result.innerHTML = `
-                <h3>✅ ${data[0].title || 'THENO Track'}</h3>
+                <h3>✅ ${data[0].title || 'TECHNO Track'}</h3>
                 <audio controls src="${data[0].audio_url}"></audio><br>
-                <a href="${data[0].audio_url}" download="theno-track.mp3">💾 DOWNLOAD MP3</a>
+                <a href="${data[0].audio_url}" download="techno-track.mp3">💾 DOWNLOAD MP3</a>
             `;
             updateQuota();
         } else {
@@ -84,9 +128,11 @@ async function generateTrack() {
         console.error('Generation Error:', e);
         result.innerHTML = `
             ❌ ${e.message}
-            <br><br>🎵 <strong>DEMO MODE</strong>
-            <br>💡 API temporarily unavailable
-            <br><br>📺 <em>Sample THENO track:</em>
+            <br><br>🔧 <strong>Try these solutions:</strong>
+            <br>1. Click ⚙️ API button to add your own API key
+            <br>2. Check if you have Suno.com account access
+            <br>3. Try again in a few minutes
+            <br><br>📺 <em>Sample TECHNO track (demo):</em>
             <br><audio controls>
                 <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
                 Your browser does not support audio.
